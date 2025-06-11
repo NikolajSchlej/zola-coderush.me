@@ -40,7 +40,7 @@ The expected way the firmware update should work is as follows:
 2. BdsDxe does that by setting two variables - _SecureFlashSetupMode_  trigger, and _SecureFlashCertData_ with a certificate in EFI_SIGNATURE_LIST format.
 ![LoadCertificateToVariable function in BdsDxe decompiled by IDA 9.1 with efiXplorer](../hydroph0bia-part1/hp1_loadcerts.png)
 3. SecurityStubDxe reads the trigger and the certificate and if they are both present attempts the verification process. It does not check either variables to be volatile or non-volatile, and uses a library function to read them instead of calling the GetVariable runtime service directly.
-![VerifyBySecureFlashSignature function in SecurityStubDxe decompiled by IDA 9.1 with efiXplorer](..hydroph0bia-part1/hp1_verify.png)
+![VerifyBySecureFlashSignature function in SecurityStubDxe decompiled by IDA 9.1 with efiXplorer](../hydroph0bia-part1/hp1_verify.png)
 
 _What could go wrong here?_ Well, if we are able to create our own non-volatile _SecureFlashSetupMode_ and _SecureFlashCertData_ without triggering any other steps above, SecurityStubDxe will happily see those as if BdsDxe created them, and will blindly trust anything that is correctly signed with the provided certificate, bypassing both SecureBoot and Insyde signature check on _isflash.bin_.
 
