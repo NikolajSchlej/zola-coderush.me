@@ -2,7 +2,7 @@
 title: "Hydroph0bia (CVE-2025-4275) - a trivial SecureBoot bypass for UEFI-compatible firmware based on Insyde H2O, part 1"
 ---
 
-{{ img(src="./hp1_logo.png", alt="Hydroph0bia logo") }}
+![Hydroph0bia logo](../hydroph0bia-part1/hp1_logo.png)
 
 This post will be about a vulnerability I dubbed Hydroph0bia (as a pun on Insyde H2O) aka CVE-2025-4275 or INSYDE-SA-2025002. 
 
@@ -11,7 +11,7 @@ Once upon an evening a relative handed me over his [HUAWEI Matebook 14 2023](htt
 
 I had a ton of free time after leaving California and returning to Germany, and my UEFI reversing skills got a bit rusty and needed a refresh, so I decided to invest some time into checking how robust those security technologies really are against somewhat capable and/or experienced attacker. 
 
-The result is self evident - **they sadly are not**. The firmware can be persuaded to trust any arbitrary external application or capsule signed by arbitrary certificate, and the only capabilities reqired for it are "can put files onto EFI System Partition" and "can create new NVRAM variables", both of which are achievable by a local privilege escalation[^1] in Windows or Linux. 
+The result is self evident - **they sadly are not**. The firmware can be persuaded to trust any arbitrary external application or capsule signed by arbitrary certificate, and the only capabilities required for it are "can put files onto EFI System Partition" and "can create new NVRAM variables", both of which are achievable by a local privilege escalation[^1] in Windows or Linux. 
 
 # NVRAM?
 As all of you might already know, UEFI provides an abstract interface to a non-volatile variable storage it calls NVRAM (Non-Volatile Random Access Memory). The interface itself is very old (a vintage of [Intel Boot Initiative of 1998](https://vzimmer.blogspot.com/2018/10/ghosts-of.html)), prone to [many issues big and small](https://www.binarly.io/blog/efixplorer-hunting-uefi-firmware-nvram-vulnerabilities), and is _an API so nice you have to call it twice_. 
@@ -38,9 +38,9 @@ The expected way the firmware update should work is as follows:
 1. A driver called SecureFlashDxe sets a trigger variable for BdsDxe to load a certificate into a volatile NVRAM variable.
 
 2. BdsDxe does that by setting two variables - _SecureFlashSetupMode_  trigger, and _SecureFlashCertData_ with a certificate in EFI_SIGNATURE_LIST format.
-{{ img(src="./hp1_loadcerts.png", alt="LoadCertificateToVariable function in BdsDxe decompiled by IDA 9.1 with efiXplorer") }}
+![LoadCertificateToVariable function in BdsDxe decompiled by IDA 9.1 with efiXplorer](../hydroph0bia-part1/hp1_loadcerts.png)
 3. SecurityStubDxe reads the trigger and the certificate and if they are both present attempts the verification process. It does not check either variables to be volatile or non-volatile, and uses a library function to read them instead of calling the GetVariable runtime service directly.
-{{ img(src="./hp1_verify.png", alt="VerifyBySecureFlashSignature function in SecurityStubDxe decompiled by IDA 9.1 with efiXplorer") }}
+![VerifyBySecureFlashSignature function in SecurityStubDxe decompiled by IDA 9.1 with efiXplorer](..hydroph0bia-part1/hp1_verify.png)
 
 _What could go wrong here?_ Well, if we are able to create our own non-volatile _SecureFlashSetupMode_ and _SecureFlashCertData_ without triggering any other steps above, SecurityStubDxe will happily see those as if BdsDxe created them, and will blindly trust anything that is correctly signed with the provided certificate, bypassing both SecureBoot and Insyde signature check on _isflash.bin_.
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 }
 ```
 Running this tool on Windows from Administrator makes the firmware trust everything signed by our certificate, including UEFI drivers that we can then run rather early in BDS phase by using the DriverXXXX mechanism. Here is an example of using a signed CrScreenshotDxe driver to get a screenshot from BIOS Setup screen with SecureBoot enabled.
-{{ img(src="./hp1_screenshot.png", alt="Screenshot of BIOS Setup screen with SecureBoot enabled") }}
+![Screenshot of BIOS Setup screen with SecureBoot enabled](../hydroph0bia-part1/hp1_screenshot.png)
 
 # Outro
 This post is a result of coordinated responsible disclosure with [CERT Coordination Center](https://www.kb.cert.org/vuls/).
