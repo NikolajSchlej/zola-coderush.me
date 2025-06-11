@@ -11,7 +11,7 @@ If you don't understand WTF is happening here, please read [part 1](../hydroph0b
 
 Previously we learned that setting _SecureFlashSetupMode_ and _SecureFlashCertData_ variables with our custom certificate (in EFI_SIGNATURE_LIST format described in UEFI specification) makes _BdsDxe_ to trust objects that we signed as if they come from Insyde themselves.
 
-This automatically means that we can run even in boot modes where nothing but Insyde 1st-party code could be running, and impersonate the firmware updater application, but instead of updating anything, we can insert arbitrary modification to the part of the firmware that are not covered by either Intel BootGuard (or similar AMD tech) or Insyde FlashDeviceMap hashing. Since UEFITool NE A70, FDM parsing is natively supported, so before trying the attack on your firmware, check out if you can modify the DXE volume, or have to resort to other option.
+This automatically means that we can run even in boot modes where nothing but Insyde 1st-party code could be running, and impersonate the firmware updater application, but instead of updating anything, we can insert arbitrary modification to the parts of the firmware that are not covered by either Intel BootGuard (or similar AMD tech) or Insyde FlashDeviceMap hashing. Since UEFITool NE A70, FDM parsing is natively supported, so before trying the attack on your firmware, check out if you can modify the DXE volume, or have to resort to other option.
 
 Good (Lenovo IdeaPad 5 Pro 16IAH7):
 ![DXE volume is covered by FDM hashing on Lenovo laptop](../hydroph0bia-part2/hp2_covered.png)
@@ -68,7 +68,7 @@ To trigger the firmware update process we need to somehow bypass write protectio
   and intended for use as a means to mark a variable read-only after the event
   EFI_END_OF_DXE_EVENT_GUID is signaled.
   
-  As customary in UEFI land this is an **utter bullshit**, because one of the main uses of VariableLock is to lock _Setup_ variable, and locking it at EndOfDxe will make BIOS Setup application unusable. Instead, _BdsDxe_ locks all variables marked by _VariableLockProtocol->RequestToLock_ right before transferring control to the bootloader, which is late enough for all non-bootloader kinds of external things to already getting executed. We do now want to mess with OptionROMs here just yet, but there's another obscure mechanism to run UEFI drivers early in BDS - [DriverXXXX](https://uefi.org/specs/UEFI/2.10_A/03_Boot_Manager.html):
+  As customary in UEFI land this is an **utter bullshit**, because one of the main uses of VariableLock is to lock _Setup_ variable, and locking it at EndOfDxe will make BIOS Setup application unusable. Instead, _BdsDxe_ locks all variables marked by _VariableLockProtocol->RequestToLock_ right before transferring control to the bootloader, which is late enough for all non-bootloader kinds of external things to already get executed. We don't want to mess with OptionROMs here just yet, but there's another obscure mechanism to run UEFI drivers early in BDS - [DriverXXXX](https://uefi.org/specs/UEFI/2.10_A/03_Boot_Manager.html):
   > Each Driver#### variable contains an EFI_LOAD_OPTION. Each load option variable is appended with a unique number, for example Driver0001, Driver0002, etc. 
   
   > The DriverOrder variable contains an array of UINT16’s that make up an ordered list of the Driver#### variable. The first element in the array is the value for the first logical driver load option, the second element is the value for the second logical driver load option, etc. The DriverOrder list is used by the firmware’s boot manager as the default load order for UEFI drivers that it should explicitly load.
@@ -276,7 +276,7 @@ SecureFlashPoCEntry (
 Now we are finally able to replace the original _isflash.bin_ with something interesting of our own, and get it executed during firmware update process when the flash is not write-protected. Let's have some fun!
 
 # PoC or GTFO?
-We got everything in place, so the only thing remaining is to tie it all together with some minor UEFI shell scripting, build and sign everything, and run the _sfpoc.cmd_ from Windows as Administrator. I'm using a custom-cert-signed version of Intel Flash Programming Tool to write our modified BIOS image, and out mod is very simple - replace the default BGRT boot graphics (that says HUAWEI) with our own image (that says ALL YOU BASE ARE BELONG TO US).
+We got everything in place, so the only thing remaining is to tie it all together with some minor UEFI shell scripting, build and sign everything, and run the _sfpoc.cmd_ from Windows as Administrator. I'm using a custom-cert-signed version of Intel Flash Programming Tool to write our modified BIOS image, and our mod is very simple - replace the default BGRT boot graphics (that says HUAWEI) with our own image (that says ALL YOU BASE ARE BELONG TO US).
 
 [![PoC video on YouTube](https://img.youtube.com/vi/1uJF44S0LQw/0.jpg)](https://www.youtube.com/watch?v=1uJF44S0LQw)
 
