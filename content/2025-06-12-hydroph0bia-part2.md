@@ -275,7 +275,7 @@ SecureFlashPoCEntry (
 Now we are finally able to replace the original _isflash.bin_ with something interesting of our own and get it executed during firmware update process when the flash is not write-protected. Let's have some fun!
 
 # PoC or GTFO?
-We got everything in place, so the only thing remaining is to tie it all together with some minor UEFI shell scripting, build and sign everything, and run the _sfpoc.cmd_ from Windows as Administrator. I'm using a custom-cert-signed version of Intel Flash Programming Tool 15 to write our modified BIOS image, and our mod is very simple - replace the default BGRT boot graphics (that says HUAWEI) with our own image (that says ALL YOU BASE ARE BELONG TO US).
+We got everything in place, so the only thing remaining is to tie it all together with some minor UEFI shell scripting, build and sign everything, and run the _sfpoc.cmd_ from Windows as Administrator. I'm using a custom-cert-signed version of Intel Flash Programming Tool 16.0 to write our modified BIOS image, and our mod is very simple - replace the default BGRT boot graphics (that says HUAWEI) with our own image (that says ALL YOU BASE ARE BELONG TO US).
 
 The PoC is on YouTube:
 [![PoC video on YouTube](https://img.youtube.com/vi/1uJF44S0LQw/0.jpg)](https://www.youtube.com/watch?v=1uJF44S0LQw)
@@ -294,7 +294,7 @@ Another option is to locate EfiBlockDeviceProtocol in our driver and write to fl
 In part 3 we will check out how Insyde fixed the issues I've reported, and if we could do anything with that "fixed" code to regain the capabilities. So far I haven't seen any BIOS update that would have fixed Hydroph0bia, so that will be written and published when OEMs do their part. Stay tuned!
 
 # Links
-[PoC package](https://github.com/NikolajSchlej/Hydroph0bia/tree/main/sfpoc) for HUAWEI MateBook 14 2023, [modified BIOS region image](https://github.com/NikolajSchlej/Hydroph0bia/blob/main/bios_images/aybabtu_logo.bin), SecureFlashPoC driver [sources](https://github.com/NikolajSchlej/Hydroph0bia/tree/main/SecureFlashPoC) and [custom-cert-signed binary](https://github.com/NikolajSchlej/Hydroph0bia/blob/main/signed/sfpoc_signed.efi), and [custom-cert-signed Intel FPT 15](https://github.com/NikolajSchlej/Hydroph0bia/blob/main/signed/fpt15_signed.efi) are on GitHub.
+[PoC package](https://github.com/NikolajSchlej/Hydroph0bia/tree/main/sfpoc) for HUAWEI MateBook 14 2023, [modified BIOS region image](https://github.com/NikolajSchlej/Hydroph0bia/blob/main/bios_images/aybabtu_logo.bin), SecureFlashPoC driver [sources](https://github.com/NikolajSchlej/Hydroph0bia/tree/main/SecureFlashPoC) and [custom-cert-signed binary](https://github.com/NikolajSchlej/Hydroph0bia/blob/main/signed/sfpoc_signed.efi), and [custom-cert-signed Intel FPT 16.0](https://github.com/NikolajSchlej/Hydroph0bia/blob/main/signed/fpt16_signed.efi) are on GitHub.
 
   
   
