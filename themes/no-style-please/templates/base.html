@@ -94,6 +94,10 @@
         {% block css %}
         <link rel="stylesheet" href="{{ get_url(path='style.css', trailing_slash=false) | safe }}"/>
         {% endblock css %}
+        {% block favicon %}
+        <link rel="icon" href="{{ get_url(path=config.extra.favicon, trailing_slash=false) }}">
+        <link rel="apple-touch-icon" href="{{ get_url(path=config.extra.apple_touch_icon, trailing_slash=false) }}">
+        {% endblock favicon %}
     </head>
     <body theme="auto">
         <div class="w">

@@ -17,3 +17,5 @@ highlight_code = true
 
 [extra]
 twitter_card = false
+favicon = "favicon.ico"
+apple_touch_icon = "apple-touch-icon.png"

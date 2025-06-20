@@ -1,4 +1,5 @@
 ---
+title: coderush.me
 ---
 
 - info
@@ -9,3 +10,4 @@
 - posts
     - Hydroph0bia (CVE-2025-4275) - a trivial SecureBoot bypass for UEFI-compatible firmware based on Insyde H2O, [part 1](./hydroph0bia-part1).
     - Hydroph0bia (CVE-2025-4275) - a bit more than just a trivial SecureBoot bypass for UEFI-compatible firmware based on Insyde H2O, [part 2](./hydroph0bia-part2).
+    - Hydroph0bia (CVE-2025-4275) - a fixed SecureBoot bypass for UEFI-compatible firmware based on Insyde H2O, [part 3](./hydroph0bia-part3).

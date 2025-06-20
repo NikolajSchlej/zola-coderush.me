@@ -17,6 +17,8 @@ highlight_code = true
 [extra]
 author = "Ahmed Alaa"
 logo = "images/logo.png"
+favicon = "favicon.ico"
+apple_touch_icon = "apple-touch-icon.png"
 header_nav = [
     { name = "~home", url = "/no-style-please/" },
     { name = "#tags", url = "/no-style-please/tags" },
